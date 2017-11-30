@@ -1,0 +1,138 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package consoleeapp;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Scanner;
+
+
+
+
+
+public class Consoleeapp {
+
+    static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
+    static final String DB_URL = "jdbc:mysql://localhost:3306/catalog";
+    
+    static final String USER = "root";
+    static final String PASS = "user";
+    public static void main(String[] args) throws SQLException, ClassNotFoundException {
+         Connection conn = null;
+        
+        Statement stmt = null;
+        try {
+            
+            Class.forName("com.mysql.jdbc.Driver");
+            
+            System.out.println("Connecting to database");
+            conn = DriverManager.getConnection(DB_URL,USER,PASS);
+            System.out.println("Creating statement...");
+            stmt = conn.createStatement();
+            String sql;
+            
+            sql = "SELECT idmembers,f_name,last_name,telephone FROM members";
+            
+            ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                int member_id = rs.getInt("idmembers");
+                String firstname = rs.getString ("f_name");
+                String lastname = rs.getString("last_name");
+                int tell = rs.getInt("telephone");
+                System.out.println("idmembers" + member_id);
+                System.out.println(", First name: " + firstname);
+                System.out.println(", Last Name: " + lastname);
+                System.out.println(", telephone: " + tell); 
+            } 
+            stmt = conn.createStatement();//gia na baloyme nees katachoriseis sth bash.den bazoyme result gt to 
+            //result set emfanizei. me sketo stmt.executeUpdate tote kanei update sth bash
+                sql="insert into members(f_name,last_name,telephone)values('tony','red','23456'),('mark','dodef','45678')";
+              stmt.executeUpdate(sql);
+
+           /* Scanner scanner = new Scanner(System.in);
+        System.out.println("Please give your Last Name:");
+        String lastname = scanner.nextLine();
+        System.out.println("Please give your First Name:");
+        String firstname = scanner.nextLine();
+        
+        sql = "INSERT INTO members (f_name, last_name,telephone) "
+                + "VALUES ('Alex', 'Alexiadi', 2110002000),"
+                + "('Mike', 'Michailidi', 2110000201)";
+         try {
+           stmt.executeUpdate(sql);
+        System.out.println("successfully !");
+           
+        } catch (SQLException ex) {
+            System.out.println("error");
+        }*/
+        
+        
+                System.out.println("Creating table in given database...");
+                stmt = conn.createStatement();
+                sql = "CREATE TABLE birthday "
+                  + "id INTEGER NOT NULL AUTO_INCREMENT, "
+                  + "birthday DATE not NULL, "
+                  + "PRIMARY KEY(id),foreign key (ID) references members(idmembers))";
+          
+                stmt.executeUpdate(sql);
+                System.out.println("Created table in given database...");
+           
+        
+
+        System.out.println("give records");
+        
+        stmt = conn.createStatement();
+        sql="Select* from menbers ";
+        try {
+           stmt.executeUpdate(sql);
+        System.out.println("successfully !");
+           
+        } catch (SQLException ex) {
+            System.out.println("error");
+        }
+            rs.close();
+            stmt.close();
+            conn.close();
+            
+        }
+        catch(SQLException se) {
+            
+            se.printStackTrace();
+            
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+        finally {
+            
+            
+            try {
+                if (stmt!=null)
+                    stmt.close();
+                
+            }
+            catch(SQLException se2){}
+            
+            try {
+                if (conn!=null)
+                    conn.close();
+                
+            }
+            catch(SQLException se) {
+                se.printStackTrace();
+            }
+        }
+        
+        System.out.println("Finished");
+    }
+}
+
+
+    
+
